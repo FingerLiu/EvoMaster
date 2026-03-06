@@ -1,0 +1,25 @@
+请验证 Coding Agent 生成的节点代码是否正确。
+
+节点需求描述：
+{description}
+
+Planning Agent 的规划：
+{planning_result}
+
+Coding Agent 的执行结果：
+{coding_result}
+
+请按照以下步骤进行验证：
+
+1. 查看工作目录下的所有文件（node_manifest.json, node.py, node_test.py）
+2. 验证 node_manifest.json 格式正确，包含必要的字段
+3. 验证 node.py 包含 `def run(inputs: dict) -> dict` 函数
+4. 安装 dependencies 中的依赖包（如果有）
+5. 运行 node_test.py 验证功能
+6. 检查输出是否符合 output_schema 定义的结构
+7. 如果有问题，尝试修复
+
+验证完成后，使用 finish 工具输出验证报告，包括：
+- 各项检查的通过/失败状态
+- 测试运行结果
+- 发现的问题及修复情况（如有）
