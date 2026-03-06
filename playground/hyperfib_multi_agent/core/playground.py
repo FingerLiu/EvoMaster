@@ -1,7 +1,7 @@
-"""多智能体 Playground 实现
+"""Auto Node Builder Playground 实现
 
-展示如何使用多个Agent协作完成任务。
-包含Planning Agent和Coding Agent的工作流。
+实现 Planning Agent -> Coding Agent -> Validation Agent 的三步协作工作流，
+用于自动构建 hyper-fib 平台的工作流节点（Node）。
 """
 
 import logging
@@ -24,15 +24,16 @@ from .exp import MultiAgentExp
 
 @register_playground("hyperfib_multi_agent")
 class MultiAgentPlayground(BasePlayground):
-    """多智能体 Playground
+    """Auto Node Builder Playground
 
-    实现Planning Agent和Coding Agent的协作工作流：
-    1. Planning Agent分析任务并制定计划
-    2. Coding Agent根据计划执行代码任务
+    实现三步协作工作流，用于自动构建 hyper-fib 平台的工作流节点：
+    1. Planning Agent 分析节点需求并制定开发计划
+    2. Coding Agent 根据计划生成节点代码（node.py, node_manifest.json, node_test.py）
+    3. Validation Agent 验证生成的节点代码是否正确、完整、符合 Schema 规范
 
     使用方式：
         # 通过统一入口
-        python run.py --agent hyperfib_multi_agent --task "任务描述"
+        python run.py --agent hyperfib_multi_agent --task "节点需求描述"
 
         # 或使用独立入口
         python playground/hyperfib_multi_agent/main.py
@@ -51,7 +52,7 @@ class MultiAgentPlayground(BasePlayground):
 
         super().__init__(config_dir=config_dir, config_path=config_path)
         self.logger = logging.getLogger(self.__class__.__name__)
-        self.agents.declare("planning_agent", "coding_agent")
+        self.agents.declare("planning_agent", "coding_agent", "validation_agent")
         
         # 初始化mcp_manager（BasePlayground.cleanup需要）
         self.mcp_manager = None
@@ -76,6 +77,7 @@ class MultiAgentPlayground(BasePlayground):
         exp = MultiAgentExp(
             planning_agent=self.agents.planning_agent,
             coding_agent=self.agents.coding_agent,
+            validation_agent=self.agents.validation_agent,
             config=self.config
         )
         # 传递 run_dir 给 Exp

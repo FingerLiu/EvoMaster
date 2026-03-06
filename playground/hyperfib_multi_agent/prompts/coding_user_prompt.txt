@@ -1,9 +1,15 @@
-请根据以下规划执行代码任务：
+请根据以下规划生成 Node 代码：
 
-任务描述：{description}
+节点需求描述：
+{description}
 
-Planning Agent的规划：
+Planning Agent 的规划：
 {planning_result}
 
-请按照规划逐步执行，确保每个步骤都正确完成。完成任务后，使用finish工具报告完成。
+请按照规划逐步创建以下文件：
+1. node_manifest.json - 节点清单（name, description, input_schema, output_schema, dependencies）
+2. node.py - 节点实现代码（必须包含 `def run(inputs: dict) -> dict` 函数）
+3. node_test.py - 测试脚本
 
+创建完成后，如果有依赖包需要安装，先安装依赖，然后运行 node_test.py 做初步验证。
+完成后使用 finish 工具报告完成。

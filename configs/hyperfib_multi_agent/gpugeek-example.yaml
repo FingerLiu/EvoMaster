@@ -1,5 +1,7 @@
-# Minimal Multi-Agent Playground - GPUGeek API 配置
-# 使用 GPUGeek 的 OpenAI 兼容 API
+# Hyperfib Multi-Agent Playground - GPUGeek API 配置
+# Auto Node Builder: Planning -> Coding -> Validation 三步工作流
+# 用于自动构建 hyper-fib 平台的工作流节点（Node）
+
 # ============================================
 # LLM 配置
 # ============================================
@@ -14,53 +16,74 @@ llm:
     timeout: 300
     max_retries: 3
     retry_delay: 1.0
+
   default: "gpugeek"
+
 # ============================================
 # 多智能体配置
 # ============================================
 agents:
-  # Planning Agent - 负责规划任务
+  # Planning Agent - 分析节点需求并制定开发计划
   planning:
     llm: "gpugeek"
     max_turns: 10
     tools:
       builtin: []
+
     context:
       max_tokens: 128000
       truncation_strategy: "latest_half"
       preserve_system_messages: true
       preserve_recent_turns: 5
-    
+
     system_prompt_file: "prompts/planning_system_prompt.txt"
     user_prompt_file: "prompts/planning_user_prompt.txt"
-  
-  # Coding Agent - 负责执行代码任务
+
+  # Coding Agent - 根据计划生成节点代码（node.py, node_manifest.json, node_test.py）
   coding:
     llm: "gpugeek"
     max_turns: 50
     tools:
       builtin: ["*"]
+
     context:
       max_tokens: 128000
       truncation_strategy: "latest_half"
       preserve_system_messages: true
       preserve_recent_turns: 5
-    
+
     system_prompt_file: "prompts/coding_system_prompt.txt"
     user_prompt_file: "prompts/coding_user_prompt.txt"
+
+  # Validation Agent - 验证生成的节点代码是否正确、完整、符合 Schema 规范
+  validation:
+    llm: "gpugeek"
+    max_turns: 30
+    tools:
+      builtin: ["*"]
+
+    context:
+      max_tokens: 128000
+      truncation_strategy: "latest_half"
+      preserve_system_messages: true
+      preserve_recent_turns: 5
+
+    system_prompt_file: "prompts/validation_system_prompt.txt"
+    user_prompt_file: "prompts/validation_user_prompt.txt"
+
 # ============================================
 # Session 配置
 # ============================================
 session:
   type: "local"
-  # type: "docker"
-  
+
   local:
     working_dir: "./playground/hyperfib_multi_agent/workspace"
-    timeout: 60
+    timeout: 120
     gpu_devices: null
     cpu_devices: null
     symlinks: {}
+
 # ============================================
 # Env 配置
 # ============================================
@@ -72,25 +95,30 @@ env:
     train_pool:
       type: "cpu"
       max_concurrent: 1
+
   docker:
-    base_image: "public/python:3.12-slim"
-    registry: "registry.dp.tech"
+    base_image: "python:3.11-slim"
+    registry: "docker.io"
     pull_policy: "if_not_present"
+
   scheduler:
     type: "local"
     queue_timeout: 300
     retry_failed: false
     max_retries: 1
+
 # ============================================
 # 系统提示词配置
 # ============================================
 system_prompt_file: "prompts/system_prompt.txt"
+
 # ============================================
 # LLM 输出显示配置
 # ============================================
 llm_output:
   show_in_console: true
   log_to_file: true
+
 # ============================================
 # 日志配置
 # ============================================
@@ -100,6 +128,7 @@ logging:
   file: null
   console: true
   log_path: "./logs/evomaster.log"
+
 # ============================================
 # 其他配置
 # ============================================
